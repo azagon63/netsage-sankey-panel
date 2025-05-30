@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import * as d3 from 'd3';
 
 interface TooltipProps {
@@ -8,15 +8,8 @@ interface TooltipProps {
 }
 
 export const Tooltip: React.FC<TooltipProps> = ({ rowNames, field, panelId }) => {
-  // get mouse position for tooltip position
-  const [mousePosition, setMousePosition] = useState({ mouseX: 100, mouseY: 100 });
-
-  const updateMousePosition = (e: any) => {
-    setMousePosition({ mouseX: e.clientX, mouseY: e.clientY });
-  };
 
   useEffect(() => {
-    window.addEventListener('mousemove', updateMousePosition);
     const pathClass = `.sankey-path${panelId}`;
     // Links Tooltip
     d3.selectAll(pathClass)
@@ -45,17 +38,17 @@ export const Tooltip: React.FC<TooltipProps> = ({ rowNames, field, panelId }) =>
           .style('background', '#19191A')
           .style('color', 'white')
           .style('border', '#A8A8A8 solid 2px')
-          .style('border-radius', '5px')
-          .style('left', mousePosition.mouseX + 'px')
-          .style('top', mousePosition.mouseY + 'px')
+          .style('border-radius', '4px')
+          .style('left', event.pageX + 'px')
+          .style('top', event.pageY + 'px')
           .style('opacity', 0)
           .style('z-index','1')
           .style('position', 'absolute');
-        div.transition().duration(200).style('opacity', 0.8);
+        div.transition().duration(100).style('opacity', 0.8);
       })
       .on('mouseout', function (d) {
         let thisId = d3.select(this).attr('id');
-        d3.selectAll(`.tooltip-${thisId}`).transition().duration(300).remove();
+        d3.selectAll(`.tooltip-${thisId}`).transition().duration(100).remove();
         d3.selectAll(pathClass).attr('opacity', 0.7);
       });
 
@@ -95,22 +88,21 @@ export const Tooltip: React.FC<TooltipProps> = ({ rowNames, field, panelId }) =>
           .style('background', '#19191A')
           .style('color', 'white')
           .style('border', '#A8A8A8 solid 2px')
-          .style('border-radius', '5px')
-          .style('left', mousePosition.mouseX + 'px')
-          .style('top', mousePosition.mouseY + 'px')
+          .style('border-radius', '4px')
+          .style('left', event.pageX + 'px')
+          .style('top', event.pageY + 'px')
           .style('opacity', 0)
           .style('z-index', '1')
           .style('position', 'absolute');
-        div.transition().duration(200).style('opacity', 0.8);
+        div.transition().duration(100).style('opacity', 0.8);
       })
       .on('mouseout', function (d) {
         let thisNode = d3.select(this).attr('data-index');
-        d3.selectAll(`.tooltip-node${thisNode}`).transition().duration(300).remove();
+        d3.selectAll(`.tooltip-node${thisNode}`).transition().duration(100).remove();
         d3.selectAll(pathClass).attr('opacity', 0.7);
       });
 
     return () => {
-      window.removeEventListener('mousemove', updateMousePosition);
     };
   });
   return null;
