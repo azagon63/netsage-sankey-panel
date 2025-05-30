@@ -24,7 +24,7 @@ export const SankeyPanel: React.FC<Props> = ({ options, data, width, height, id 
    */
   let parsedData: any[] = [];
   try {
-    parsedData = parseData(data, options, graphOptions.monochrome, graphOptions.color);
+    parsedData = parseData(data, options, graphOptions.monochrome, theme.visualization.getColorByName(graphOptions.color));
   } catch (error) {
     console.error('parsing error: ', error);
   }
@@ -32,10 +32,10 @@ export const SankeyPanel: React.FC<Props> = ({ options, data, width, height, id 
   const pluginData = parsedData[0];
   const rowDisplayNames = parsedData[2];
   const field = parsedData[3];
-  const fixColor = parsedData[4];
+  // const fixColor = parsedData[4];
   // const textColor = fixColor(graphOptions.textColor);
   const textColor = theme.colors.text.primary;
-  const nodeColor = fixColor(graphOptions.nodeColor);
+  const nodeColor = theme.visualization.getColorByName(graphOptions.nodeColor);
 
   return (
     <g>

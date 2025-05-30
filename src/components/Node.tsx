@@ -30,7 +30,6 @@ export const Node: React.FC<NodeProps> = ({ data, textColor, nodeColor, panelId,
 
   const width = x1 - x0;
   const strokeColor = 'black';
-  // const fontSize = theme.typography.fontSize;
   const fontSize = labelSize+'px';
   const className = `sankey-node${panelId}`;
 
