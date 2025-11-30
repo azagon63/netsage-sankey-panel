@@ -7,13 +7,13 @@ import { DataFrameView, Field, getFieldDisplayName, Vector } from '@grafana/data
  * @param options the field options from the editor panel
  * @param monochrome the boolean in the editor panel that sets whether the sankey is single or multi colored
  * @param color the color chosen in the editor panel for the sankey links if monochrome bool is true
+ * @param distinctColumns whether columns values should be treated as distinct or grouped together
  * @return {pluginData} the node and link data for the d3-sankey
  * @return {displayNames} the display names for the headers
  * @return {rowDisplayNames}
  * @return {valueField[0]}
  */
-export function parseData(data: { series: any[] }, options: { valueField: any }, monochrome: boolean, color: any) {
-  
+export function parseData(data: { series: any[] }, options: { valueField: any }, monochrome: boolean, color: any, distinctColumns: boolean) {
   /**
    * Colors
    * if monochrome = true, set all colors to value: color
@@ -95,20 +95,29 @@ export function parseData(data: { series: any[] }, options: { valueField: any },
   // Retrieve panel data from panel
   frame.forEach((row) => {
     let currentLink: number[] = [];
+    let firstField = true;
     // go through columns to find all nodes
     for (let i = 0; i < numFields; i++) {
       let node = row[i];
-      let index = pluginDataNodes.findIndex((e) => e.name === node && e.colId === i);
+      let index = -1;
+      if (distinctColumns) {
+        index = pluginDataNodes.findIndex((e) => e.name === node && e.colId === i);
+      } else {
+        index = pluginDataNodes.findIndex((e) => e.name === node);
+      }
       if (index === -1) {
         index = pluginDataNodes.push({ name: node, id: [`row${rowId}`], colId: i }) - 1;
-        if (i === 0) {
-          currentColor = colorArray[col0.length % colorArray.length];
-          col0.push({ name: node, index: index, color: currentColor });
-        }
       } else {
         pluginDataNodes[index].id.push(`row${rowId}`); // might not need?
       }
-      currentLink.push(index);
+      if (node !== null) {
+        currentLink.push(index);
+        if (firstField) {
+          firstField = false;
+          currentColor = colorArray[col0.length % colorArray.length];
+          col0.push({ name: node, index: index, color: currentColor });
+        }
+      }
     }
     // create all the individual links, value is always the last column
     // let rowColor = colorArray[currentLink[0] % colorArray.length];

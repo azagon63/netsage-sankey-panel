@@ -94,6 +94,12 @@ export const plugin = new PanelPlugin<SankeyOptions>(SankeyPanel)
           max: 30,
           step: 1,
         },
+      })
+      .addBooleanSwitch({
+        path: 'distinctColumns',
+        name: 'Consider columns distinct',
+        description: 'Values that appear in different columns will not be grouped together. Disabling this may make more compact graphs, but may result in unsupported circular flows.',
+        defaultValue: true,
       });
   })
   .useFieldConfig({

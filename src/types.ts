@@ -8,6 +8,7 @@ export interface SankeyOptions {
   iteration: number;
   valueField: string;
   labelSize: number;
+  distinctColumns: boolean;
 }
 
 export interface SankeyFieldConfig {}
